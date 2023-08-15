@@ -2,7 +2,7 @@
 
 ## Payfast module v1.2.1 for PrestaShop v8.1.0
 
-This is the Payfast module for Prestashop. Please feel free to contact the Payfast support team [here](https://payfast.io/contact/) should you require any assistance.
+This is the Payfast module for Prestashop. Please feel free to contact the [Payfast support team here](https://payfast.io/contact/) should you require any assistance.
 
 ## Installation
 1. Login to the PrestaShop Admin dashboard.
