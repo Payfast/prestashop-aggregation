@@ -3,7 +3,7 @@
   "description": "Payfast common class for modules.",
   "type": "library",
   "license": "GPL-3.0",
-  "homepage": "https://github.com/Payfast/payfast-common",
+  "homepage": "https://github.com/PayFast/payfast-common",
   "authors": [
     {
       "name": "App Inlet (Pty) Ltd",

@@ -2,23 +2,23 @@
     "packages": [
         {
             "name": "payfast/payfast-common",
-            "version": "v1.0.1",
-            "version_normalized": "1.0.1.0",
+            "version": "v1.0.2",
+            "version_normalized": "1.0.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Payfast/payfast-common.git",
-                "reference": "f37b4f0c46c065fa7f40edc8964226ca4b244a25"
+                "reference": "04c664a1d49e118c85507a56de35fe85eaee6048"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Payfast/payfast-common/zipball/f37b4f0c46c065fa7f40edc8964226ca4b244a25",
-                "reference": "f37b4f0c46c065fa7f40edc8964226ca4b244a25",
+                "url": "https://api.github.com/repos/Payfast/payfast-common/zipball/04c664a1d49e118c85507a56de35fe85eaee6048",
+                "reference": "04c664a1d49e118c85507a56de35fe85eaee6048",
                 "shasum": ""
             },
             "require": {
                 "php": "^8.0"
             },
-            "time": "2023-07-21T19:13:48+00:00",
+            "time": "2024-01-29T19:49:41+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -37,10 +37,10 @@
                 }
             ],
             "description": "Payfast common class for modules.",
-            "homepage": "https://github.com/Payfast/payfast-common",
+            "homepage": "https://github.com/PayFast/payfast-common",
             "support": {
                 "issues": "https://github.com/Payfast/payfast-common/issues",
-                "source": "https://github.com/Payfast/payfast-common/tree/v1.0.1"
+                "source": "https://github.com/Payfast/payfast-common/tree/v1.0.2"
             },
             "install-path": "../payfast/payfast-common"
         }

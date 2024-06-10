@@ -1,10 +1,14 @@
 {*
- * Copyright (c) 2022 PayGate (Pty) Ltd
- *
- * Author: App Inlet (Pty) Ltd
- *
- * Released under the GNU General Public License
- *}
+* confirmation.tpl
+*
+* Copyright (c) 2024 Payfast (Pty) Ltd
+*
+* @author     App Inlet
+* @version    1.2.2
+* @date       2024/06/10
+*
+* @link       https://payfast.io/integration/plugins/prestashop/
+*}
 {extends file='page.tpl'}
 {block name='content'}
     <div class="card">

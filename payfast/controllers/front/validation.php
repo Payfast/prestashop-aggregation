@@ -1,16 +1,15 @@
 <?php
+
 /*
  * payfast.php
  *
- * Copyright (c) 2023 Payfast (Pty) Ltd
- * You (being anyone who is not Payfast (Pty) Ltd) may download and use this plugin / code in your own website in conjunction with a registered and active Payfast account. If your Payfast account is terminated for any reason, you may not use this plugin / code or part thereof.
- * Except as expressly indicated in this licence, you may not use, copy, modify or distribute this plugin / code or part thereof in any way.
+ * Copyright (c) 2024 Payfast (Pty) Ltd
  *
  * @author     App Inlet
- * @version    1.2.1
- * @date       15/08/2023
+ * @version    1.2.2
+ * @date       2024/06/10
  *
- * @link       https://payfast.io/integration/shopping-carts/prestashop/
+ * @link       https://payfast.io/integration/plugins/prestashop/
  */
 
 /**
@@ -18,14 +17,13 @@
  */
 
 
+use Payfast\PayfastCommon\PayfastCommon;
+
 require_once __DIR__ . '/../../vendor/autoload.php';
 require_once _PS_MODULE_DIR_ . 'payfast/payfast.php';
 
-use Payfast\PayfastCommon\PayfastCommon;
-
 class PayfastValidationModuleFrontController extends ModuleFrontController
 {
-
     public const REDIRECTBACK = 'index.php?controller=order&step=1';
 
     /**
@@ -80,8 +78,8 @@ class PayfastValidationModuleFrontController extends ModuleFrontController
         $this->postProcessStepB($pfError, $pfDone, $pfErrMsg, $pfData, $pfHost, $pfParamString);
     }
 
-    public function postProcessStepB($pfError, $pfDone, $pfErrMsg, $pfData, $pfHost, $pfParamString) {
-
+    public function postProcessStepB($pfError, $pfDone, $pfErrMsg, $pfData, $pfHost, $pfParamString)
+    {
         //// Get internal cart
         if (!$pfError && !$pfDone) {
             // Get order data
@@ -122,7 +120,8 @@ class PayfastValidationModuleFrontController extends ModuleFrontController
         $this->postProcessStepC($total, $pfError, $pfDone, $pfData, $pfErrMsg);
     }
 
-    public function postProcessStepC($total, $pfError, $pfDone, $pfData, $pfErrMsg) {
+    public function postProcessStepC($total, $pfError, $pfDone, $pfData, $pfErrMsg)
+    {
         //// Check status and update order
         if (!$pfError && !$pfDone) {
             PayfastCommon::pflog('Check status and update order');
