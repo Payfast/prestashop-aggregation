@@ -5,8 +5,8 @@
  *
  *
  * @author     App Inlet
- * @version    1.2.2
- * @date       2024/06/10
+ * @version    1.2.3
+ * @date       2024/08/21
  *
  * @link       https://payfast.io/integration/plugins/prestashop/
  */
@@ -33,7 +33,7 @@ class Payfast extends PaymentModule
             define('PF_SOFTWARE_NAME', 'PrestaShop');
             define('PF_SOFTWARE_VER', Configuration::get('PS_INSTALL_VERSION'));
             define('PF_MODULE_NAME', 'PF-Prestashop');
-            define('PF_MODULE_VER', '1.2.2');
+            define('PF_MODULE_VER', '1.2.3');
         }
 
         if (!defined("PF_DEBUG")) {
@@ -130,12 +130,20 @@ class Payfast extends PaymentModule
                 Configuration::updateValue('PAYFAST_PAYNOW_TEXT', $paynow_text);
             }
 
-            if ($paynow_logo = Tools::getValue('payfast_paynow_logo')) {
-                Configuration::updateValue('PAYFAST_PAYNOW_LOGO', $paynow_logo);
+            if ($paynow_logo = Tools::getValue('logo_position')) {
+                $isOn = $paynow_logo == -1 ? 'off' : 'on';
+                Configuration::updateValue('PAYFAST_PAYNOW_LOGO', $isOn);
             }
-            if ($paynow_align = Tools::getValue('payfast_paynow_align')) {
-                Configuration::updateValue('PAYFAST_PAYNOW_ALIGN', $paynow_align);
-            }
+
+            $position = match (Tools::getValue('logo_position')) {
+                "0" => 'left',
+                "1" => 'right',
+                "2" => 'footer',
+                default => 'none',
+            };
+
+            Configuration::updateValue('PAYFAST_PAYNOW_ALIGN', $position);
+
             $passPhrase = Tools::getValue('payfast_passphrase');
             Configuration::updateValue('PAYFAST_PASSPHRASE', $passPhrase);
 
@@ -744,10 +752,15 @@ class Payfast extends PaymentModule
             'value' => $data['info']['signature'],
         ];
 
+        $this->context->smarty->assign(['data' => $data]);
+
+        $paymentForm = $this->fetch('module:payfast/views/templates/front/payfast.tpl');
+
         //create the payment option object
         $externalOption = new PaymentOption();
         $externalOption->setCallToActionText($this->l(Configuration::get('PAYFAST_PAYNOW_TEXT')))
                        ->setAction($data['payfast_url']) //link to payfast
+                       ->setForm($paymentForm)
                        ->setInputs($payfastValues);
 
         return $externalOption;
