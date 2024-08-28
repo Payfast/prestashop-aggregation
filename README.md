@@ -11,7 +11,7 @@ to [contact the Payfast support team](https://payfast.io/contact/) should you re
 2. Navigate to **Modules** -> **Module Manager**.
 3. Click the **Upload a module** button.
 4. Click **Drop your module archive here or select file** and select 
-   **[payfast.zip](https://github.com/Payfast/mod-prestashop/releases/download/v1.2.2/payfast.zip)**.
+   **[payfast.zip](https://github.com/Payfast/mod-prestashop/releases/download/v1.2.3/payfast.zip)**.
 5. Click the **Configure** button. The Payfast configuration options will now display.
 6. Enter your preferred details and click **Save Changes** at the bottom of the page.
 
