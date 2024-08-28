@@ -1,6 +1,6 @@
 # mod-prestashop
 
-## Payfast module v1.2.2 for PrestaShop v8.1.6
+## Payfast module v1.2.3 for PrestaShop v8.1.7
 
 This is the Payfast module for Prestashop. Please feel free
 to [contact the Payfast support team](https://payfast.io/contact/) should you require any assistance.

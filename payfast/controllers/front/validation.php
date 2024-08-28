@@ -6,8 +6,8 @@
  * Copyright (c) 2024 Payfast (Pty) Ltd
  *
  * @author     App Inlet
- * @version    1.2.2
- * @date       2024/06/10
+ * @version    1.2.3
+ * @date       2024/08/21
  *
  * @link       https://payfast.io/integration/plugins/prestashop/
  */
