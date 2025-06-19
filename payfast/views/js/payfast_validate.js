@@ -1,11 +1,13 @@
 $(document).ready(function () {
-    let isLive = $("input[name='payfast_mode']:checked").val();
-    let merchantID = $("input[name='payfast_merchant_id']").val();
-    let merchantKey = $("input[name='payfast_merchant_key']").val();
-    let isSplitPayment = $("input[name='payfast_split_payments_enabled']:checked").val();
-    let splitMerchantID = $("input[name='payfast_split_payment_merchant_id']").val();
-    let splitAmount = $("input[name='payfast_split_payment_amount']").val();
-    let splitPercentage = $("input[name='payfast_split_payment_percentage']").val();
+  let $payfastForm = $("input[name^='payfast_']");
+
+  let isLive = $payfastForm.filter("[name='payfast_mode']:checked").val();
+  let merchantID = $payfastForm.filter("[name='payfast_merchant_id']").val();
+  let merchantKey = $payfastForm.filter("[name='payfast_merchant_key']").val();
+  let isSplitPayment = $payfastForm.filter("[name='payfast_split_payments_enabled']:checked").val();
+  let splitMerchantID = $payfastForm.filter("[name='payfast_split_payment_merchant_id']").val();
+  let splitAmount = $payfastForm.filter("[name='payfast_split_payment_amount']").val();
+  let splitPercentage = $payfastForm.filter("[name='payfast_split_payment_percentage']").val();
     let splitPaymentFields = ['payfast_split_payment_merchant_id', 'payfast_split_payment_amount', 'payfast_split_payment_percentage',
       'payfast_split_payment_min', 'payfast_split_payment_max'];
     let errorFields = [];
@@ -23,12 +25,26 @@ $(document).ready(function () {
       }
     });
 
-    $("input[name='payfast_merchant_id']").change(function () {
-      merchantID = $("input[name='payfast_merchant_id']").val();
-    });
+  $(document).on("change", "input[name^='payfast_']", function () {
+    let inputName = $(this).attr("name");
 
-    $("input[name='payfast_merchant_key']").change(function () {
-      merchantKey = $("input[name='payfast_merchant_key']").val();
+    switch (inputName) {
+      case "payfast_merchant_id":
+        merchantID = $(this).val();
+        break;
+      case "payfast_merchant_key":
+        merchantKey = $(this).val();
+        break;
+      case "payfast_split_payment_amount":
+        splitAmount = $(this).val();
+        break;
+      case "payfast_split_payment_percentage":
+        splitPercentage = $(this).val();
+        break;
+      case "payfast_split_payment_merchant_id":
+        splitMerchantID = $(this).val();
+        break;
+    }
     });
 
     $("input[name='payfast_split_payments_enabled']").change(function () {
@@ -45,18 +61,6 @@ $(document).ready(function () {
       if ($('#payfastDetailsError').html().length > 0) {
         validatePayfastForm();
       }
-    });
-
-    $("input[name='payfast_split_payment_amount']").change(function () {
-      splitAmount = $("input[name='payfast_split_payment_amount']").val();
-    });
-
-    $("input[name='payfast_split_payment_percentage']").change(function () {
-      splitPercentage = $("input[name='payfast_split_payment_percentage']").val();
-    });
-
-    $("input[name='payfast_split_payment_merchant_id']").change(function () {
-      splitMerchantID = $("input[name='payfast_split_payment_merchant_id']").val();
     });
 
 

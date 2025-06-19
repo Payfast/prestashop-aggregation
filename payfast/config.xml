@@ -3,11 +3,7 @@
 /*
  * config.xml
  *
- * Copyright (c) 2024 Payfast (Pty) Ltd
- *
- * @author     App Inlet
- * @version    1.2.3
- * @date       2024/08/21
+ * Copyright (c) 2025 Payfast (Pty) Ltd
  *
  * @link       https://payfast.io/integration/plugins/prestashop/
  */
@@ -15,7 +11,7 @@
 <module>
     <name>payfast</name>
     <displayName><![CDATA[Payfast]]></displayName>
-    <version><![CDATA[1.2.3]]></version>
+    <version><![CDATA[1.3.0]]></version>
     <description>
         <![CDATA[Accept payments via Payfast.]]></description>
     <author><![CDATA[Payfast]]></author>

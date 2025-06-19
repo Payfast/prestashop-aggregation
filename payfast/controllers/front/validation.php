@@ -3,11 +3,7 @@
 /*
  * payfast.php
  *
- * Copyright (c) 2024 Payfast (Pty) Ltd
- *
- * @author     App Inlet
- * @version    1.2.3
- * @date       2024/08/21
+ * Copyright (c) 2025 Payfast (Pty) Ltd
  *
  * @link       https://payfast.io/integration/plugins/prestashop/
  */
@@ -17,7 +13,7 @@
  */
 
 
-use Payfast\PayfastCommon\PayfastCommon;
+use Payfast\PayfastCommon\Aggregator\Request\PaymentRequest;
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 require_once _PS_MODULE_DIR_ . 'payfast/payfast.php';
@@ -29,59 +25,59 @@ class PayfastValidationModuleFrontController extends ModuleFrontController
     /**
      * @see FrontController::postProcess()
      */
-    public function postProcess()
+    public function postProcess(): void
     {
         // Variable Initialization
         $pfError       = false;
         $pfErrMsg      = '';
-        $pfDone        = false;
-        $pfData        = array();
         $pfHost        = ((Configuration::get('PAYFAST_MODE') == 'live') ? 'www' : 'sandbox') . '.payfast.co.za';
         $pfParamString = '';
 
+        $paymentRequest = new PaymentRequest(Configuration::get('PAYFAST_LOGS'));
 
-        PayfastCommon::pflog('Payfast ITN call received');
 
-        //// Notify Payfast that information has been received
-        header('HTTP/1.0 200 OK');
-        flush();
+        $paymentRequest->pflog('Payfast ITN call received');
 
-        //// Get data sent by Payfast
-        if (!$pfError && !$pfDone) {
-            PayfastCommon::pflog('Get posted data');
+        $paymentRequest->pflog('Get posted data');
 
-            // Posted variables from ITN
-            $pfData = PayfastCommon::pfGetData();
+        // Posted variables from ITN
+        $pfData = $paymentRequest->pfGetData();
 
-            PayfastCommon::pflog('Payfast Data: ' . print_r($pfData, true));
+        $paymentRequest->pflog('Payfast Data: ' . print_r($pfData, true));
 
-            if ($pfData === false) {
-                $pfError  = true;
-                $pfErrMsg = PayfastCommon::PF_ERR_BAD_ACCESS;
-            }
+        if ($pfData === false) {
+            $pfError  = true;
+            $pfErrMsg = PaymentRequest::PF_ERR_BAD_ACCESS;
         }
 
         //// Verify security signature
-        if (!$pfError && !$pfDone) {
-            PayfastCommon::pflog('Verify security signature');
+        if (!$pfError) {
+            $paymentRequest->pflog('Verify security signature');
 
             $passPhrase   = Configuration::get('PAYFAST_PASSPHRASE');
             $pfPassPhrase = empty($passPhrase) ? null : $passPhrase;
 
             // If signature different, log for debugging
-            if (!PayfastCommon::pfValidSignature($pfData, $pfParamString, $pfPassPhrase)) {
+            if (!$paymentRequest->pfValidSignature($pfData, $pfParamString, $pfPassPhrase)) {
                 $pfError  = true;
-                $pfErrMsg = PayfastCommon::PF_ERR_INVALID_SIGNATURE;
+                $pfErrMsg = PaymentRequest::PF_ERR_INVALID_SIGNATURE;
             }
         }
 
-        $this->postProcessStepB($pfError, $pfDone, $pfErrMsg, $pfData, $pfHost, $pfParamString);
+        $this->validatePayfastTransaction($pfError, $pfErrMsg, $pfData, $pfHost, $pfParamString);
     }
 
-    public function postProcessStepB($pfError, $pfDone, $pfErrMsg, $pfData, $pfHost, $pfParamString)
+    public function validatePayfastTransaction($pfError, $pfErrMsg, $pfData, $pfHost, $pfParamString): void
     {
+        $paymentRequest = new PaymentRequest(Configuration::get('PAYFAST_LOGS'));
+        $moduleInfo     = [
+            'pfSoftwareName'       => 'PrestaShop',
+            'pfSoftwareVer'        => Configuration::get('PS_INSTALL_VERSION'),
+            'pfSoftwareModuleName' => 'PF-Prestashop',
+            'pfModuleVer'          => '1.3.0',
+        ];
         //// Get internal cart
-        if (!$pfError && !$pfDone) {
+        if (!$pfError) {
             // Get order data
             $cart = new Cart((int)$pfData['m_payment_id']);
         }
@@ -92,39 +88,42 @@ class PayfastValidationModuleFrontController extends ModuleFrontController
 
         //// Verify data received
         if (!$pfError) {
-            PayfastCommon::pflog('Verify data received');
+            $paymentRequest->pflog('Verify data received');
 
-            $pfValid = PayfastCommon::pfValidData($pfHost, $pfParamString);
+            $pfValid = $paymentRequest->pfValidData($moduleInfo, $pfHost, $pfParamString);
 
             if (!$pfValid) {
                 $pfError  = true;
-                $pfErrMsg = PayfastCommon::PF_ERR_BAD_ACCESS;
+                $pfErrMsg = PaymentRequest::PF_ERR_BAD_ACCESS;
             }
         }
 
         //// Check data against internal order
-        if (!$pfError && !$pfDone) {
-            PayfastCommon::pflog('Check data against internal order');
+        if (!$pfError) {
+            $paymentRequest->pflog('Check data against internal order');
             $fromCurrency = new Currency(Currency::getIdByIsoCode('ZAR'));
-            $toCurrency   = new Currency((int)$cart->id_currency);
+            $toCurrency   = new Currency($cart->id_currency);
 
             $total = Tools::convertPriceFull($pfData['amount_gross'], $fromCurrency, $toCurrency);
 
             // Check order amount
             if (strcasecmp($pfData['custom_str2'], $cart->secure_key) != 0) {
                 $pfError  = true;
-                $pfErrMsg = PayfastCommon::PF_ERR_SESSIONID_MISMATCH;
+                $pfErrMsg = PaymentRequest::PF_ERR_SESSIONID_MISMATCH;
             }
         }
 
-        $this->postProcessStepC($total, $pfError, $pfDone, $pfData, $pfErrMsg);
+        $this->processPayfastOrder($total, $pfError, $pfData, $pfErrMsg);
     }
 
-    public function postProcessStepC($total, $pfError, $pfDone, $pfData, $pfErrMsg)
+
+    public function processPayfastOrder($total, $pfError, $pfData, $pfErrMsg): void
     {
+        $paymentRequest = new PaymentRequest(Configuration::get('PAYFAST_LOGS'));
+
         //// Check status and update order
-        if (!$pfError && !$pfDone) {
-            PayfastCommon::pflog('Check status and update order');
+        if (!$pfError) {
+            $paymentRequest->pflog('Check status and update order');
 
             $transaction_id = $pfData['pf_payment_id'];
 
@@ -134,7 +133,7 @@ class PayfastValidationModuleFrontController extends ModuleFrontController
 
             switch ($pfData['payment_status']) {
                 case 'COMPLETE':
-                    PayfastCommon::pflog('- Complete');
+                    $paymentRequest->pflog('- Complete');
 
                     // Update the purchase status
                     $this->module->validateOrder(
@@ -152,7 +151,7 @@ class PayfastValidationModuleFrontController extends ModuleFrontController
                     break;
 
                 case 'FAILED':
-                    PayfastCommon::pflog('- Failed');
+                    $paymentRequest->pflog('- Failed');
 
                     // If payment fails, delete the purchase log
                     $this->module->validateOrder(
@@ -170,7 +169,7 @@ class PayfastValidationModuleFrontController extends ModuleFrontController
                     break;
 
                 case 'PENDING':
-                    PayfastCommon::pflog('- Pending');
+                    $paymentRequest->pflog('- Pending');
 
                     // Need to wait for "Completed" before processing
                     break;
@@ -183,11 +182,11 @@ class PayfastValidationModuleFrontController extends ModuleFrontController
 
         // If an error occurred
         if ($pfError) {
-            PayfastCommon::pflog('Error occurred: ' . $pfErrMsg);
+            $paymentRequest->pflog('Error occurred: ' . $pfErrMsg);
         }
 
         // Close log
-        PayfastCommon::pflog('', true);
+        $paymentRequest->pflog('', true);
         exit;
     }
 }
