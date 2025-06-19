@@ -3,11 +3,7 @@
 /*
  * index.php
  *
- * Copyright (c) 2024 Payfast (Pty) Ltd
- *
- * @author     App Inlet
- * @version    1.2.3
- * @date       2024/08/21
+ * Copyright (c) 2025 Payfast (Pty) Ltd
  *
  * @link       https://payfast.io/integration/plugins/prestashop/
  */

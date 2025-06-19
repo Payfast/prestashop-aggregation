@@ -1,4 +1,6 @@
-pf__logo {
+@import url('https://fonts.googleapis.com/css?family=Open+Sans');
+
+.pf__logo {
     height: 60px;
     margin-left: 20px;
 }
@@ -27,12 +29,10 @@ pf__logo {
     width: 92%;
     background-color: #ffffff;
     margin-right: 20px;
-    padding: 20px;
     font-size: 13px;
     color: #000000;
-    font-family: "Open Sans" Helvetica, Arial, Verdana, Tahoma, sans-serif;
-    padding-left: 40px;
-
+    font-family: "Open Sans", Helvetica, Arial, Verdana, Tahoma, sans-serif;
+    padding: 20px 20px 20px 40px;
 }
 
 .divider {
@@ -122,10 +122,6 @@ pf__logo {
 
 }
 
-#merchant__input--details {
-    padding-left: 10px;
-}
-
 .additional__info--taller {
     margin-top: 0 !important;
 }
@@ -174,9 +170,9 @@ pf__logo {
 
 .config__pf {
     width: 100%;
-    -moz-box-shadow: 0px 0px 5px 3px #ccc;
-    -webkit-box-shadow: 0px 0px 5px 3px #ccc;
-    box-shadow: 0px 0px 5px 3px #ccc;
+    -moz-box-shadow: 0 0 5px 3px #ccc;
+    -webkit-box-shadow: 0 0 5px 3px #ccc;
+    box-shadow: 0 0 5px 3px #ccc;
 }
 
 #pf__content {
@@ -215,8 +211,6 @@ pf__logo {
     margin-bottom: 10px;
     margin-left: 50px;
 }
-
-@import url('https://fonts.googleapis.com/css?family=Open+Sans');
 
 @media screen and (max-width: 1023px) {
 
@@ -264,18 +258,8 @@ input[type=number]::-webkit-outer-spin-button {
     margin: 0;
 }
 
-#pf__link {
-    color: #022d2d;
-    text-decoration: none;
-    font-weight: bold;
-}
-
 .split__selector {
     margin-top: 15px;
-}
-
-.split__info {
-    margin-top: 20px;
 }
 
 .page-sidebar-closed:not(.mobile) #content {

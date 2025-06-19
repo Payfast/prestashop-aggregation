@@ -1,12 +1,7 @@
 <?php
 
 /*
- * payfast.php
- *
- *
- * @author     App Inlet
- * @version    1.2.3
- * @date       2024/08/21
+ * Copyright (c) 2025 Payfast (Pty) Ltd
  *
  * @link       https://payfast.io/integration/plugins/prestashop/
  */
@@ -26,6 +21,7 @@ class Payfast extends PaymentModule
     private const CHECKED      = ' checked';
     private const PAYFASTURL   = 'https://payfast.io/';
     private const PFLINK       = 'pf__link';
+    private string $page;
 
     public function __construct()
     {
@@ -33,7 +29,7 @@ class Payfast extends PaymentModule
             define('PF_SOFTWARE_NAME', 'PrestaShop');
             define('PF_SOFTWARE_VER', Configuration::get('PS_INSTALL_VERSION'));
             define('PF_MODULE_NAME', 'PF-Prestashop');
-            define('PF_MODULE_VER', '1.2.3');
+            define('PF_MODULE_VER', '1.3.0');
         }
 
         if (!defined("PF_DEBUG")) {
@@ -60,7 +56,7 @@ class Payfast extends PaymentModule
         $this->confirmUninstall = $this->l('Are you sure you want to delete your details ?');
     }
 
-    public function install()
+    public function install(): bool
     {
         if (
             !parent::install()
@@ -87,30 +83,30 @@ class Payfast extends PaymentModule
         return true;
     }
 
-    public function uninstall()
+    public function uninstall(): bool
     {
         return parent::uninstall()
-               && Configuration::deleteByName('PAYFAST_MERCHANT_ID')
-               && Configuration::deleteByName('PAYFAST_MERCHANT_KEY')
-               && Configuration::deleteByName('PAYFAST_MODE')
-               && Configuration::deleteByName('PAYFAST_LOGS')
-               && Configuration::deleteByName('PAYFAST_PAYNOW_TEXT')
-               && Configuration::deleteByName('PAYFAST_PAYNOW_LOGO')
-               && Configuration::deleteByName('PAYFAST_PAYNOW_ALIGN')
-               && Configuration::deleteByName('PAYFAST_PASSPHRASE')
-               && Configuration::deleteByName('PAYFAST_SPLIT_PAYMENT_ENABLED')
-               && Configuration::deleteByName('PAYFAST_SPLIT_PAYMENT_MERCHANT_ID')
-               && Configuration::deleteByName('PAYFAST_SPLIT_PAYMENT_AMOUNT')
-               && Configuration::deleteByName('PAYFAST_SPLIT_PAYMENT_PERCENTAGE')
-               && Configuration::deleteByName('PAYFAST_SPLIT_PAYMENT_MIN')
-               && Configuration::deleteByName('PAYFAST_SPLIT_PAYMENT_MAX');
+            && Configuration::deleteByName('PAYFAST_MERCHANT_ID')
+            && Configuration::deleteByName('PAYFAST_MERCHANT_KEY')
+            && Configuration::deleteByName('PAYFAST_MODE')
+            && Configuration::deleteByName('PAYFAST_LOGS')
+            && Configuration::deleteByName('PAYFAST_PAYNOW_TEXT')
+            && Configuration::deleteByName('PAYFAST_PAYNOW_LOGO')
+            && Configuration::deleteByName('PAYFAST_PAYNOW_ALIGN')
+            && Configuration::deleteByName('PAYFAST_PASSPHRASE')
+            && Configuration::deleteByName('PAYFAST_SPLIT_PAYMENT_ENABLED')
+            && Configuration::deleteByName('PAYFAST_SPLIT_PAYMENT_MERCHANT_ID')
+            && Configuration::deleteByName('PAYFAST_SPLIT_PAYMENT_AMOUNT')
+            && Configuration::deleteByName('PAYFAST_SPLIT_PAYMENT_PERCENTAGE')
+            && Configuration::deleteByName('PAYFAST_SPLIT_PAYMENT_MIN')
+            && Configuration::deleteByName('PAYFAST_SPLIT_PAYMENT_MAX');
     }
 
-    public function getContent()
+    public function getContent(): string
     {
         global $cookie;
-        $errors = array();
-        $html   = '
+
+        $html = '
         <div id="pf__content">
         <div id="content" class="config__pf">
         <div class="pf__header">
@@ -194,17 +190,6 @@ class Payfast extends PaymentModule
             }
         }
 
-
-        /* Display errors */
-        if (sizeof($errors)) {
-            $html .= '<ul style="color: red; font-weight: bold; width: 100%; background: #FFDFDF; ">';
-            foreach ($errors as $error) {
-                $html .= '<li> ' . $error . '</li>';
-            }
-            $html .= '</ul>';
-        }
-
-
         $blockPositionList = array(
             self::DISABLE      => $this->l('Disable'),
             self::LEFT_COLUMN  => $this->l('Left Column'),
@@ -266,23 +251,23 @@ class Payfast extends PaymentModule
                     </span>
                     <input class="merchant__input"   type="number" step="0" min="0" name="payfast_merchant_id"
                      placeholder="e.g. 1000010.." value="' .
-                 Tools::getValue(
-                     'payfast_merchant_id',
-                     Configuration::get('PAYFAST_MERCHANT_ID')
-                 ) . '" />
+            Tools::getValue(
+                'payfast_merchant_id',
+                Configuration::get('PAYFAST_MERCHANT_ID')
+            ) . '" />
                     <span class="merchant__headers">
                     ' . $this->l('Merchant Key') . '
                     </span>
                     <input class="merchant__input"   type="text" name="payfast_merchant_key"
                      placeholder="e.g. 46f0cd69458.." value="' .
-                 trim(
-                     Tools::getValue('payfast_merchant_key', Configuration::get('PAYFAST_MERCHANT_KEY'))
-                 ) . '" />
+            trim(
+                Tools::getValue('payfast_merchant_key', Configuration::get('PAYFAST_MERCHANT_KEY'))
+            ) . '" />
                  </div>
              <p class="additional__info additional__info--smaller">' . $this->l(
                 'You can find your Merchant ID and Merchant Key on your '
             ) . '<a id="' . self::PFLINK . '" href="' . self::PAYFASTURL . '">' .
-                 $this->l('payfast.io') . '</a>' . $this->l(' account under DASHBOARD.') . '</p>
+            $this->l('payfast.io') . '</a>' . $this->l(' account under DASHBOARD.') . '</p>
              </div>
 
             <div class="divider"></div>
@@ -294,18 +279,18 @@ class Payfast extends PaymentModule
                 </span>
                 <input class="merchant__input"   type="text" name="payfast_passphrase"
                  placeholder="Same as your Payfast account" value="' .
-                 trim(
-                     Tools::getValue('payfast_passphrase', Configuration::get('PAYFAST_PASSPHRASE'))
-                 ) . '" />
+            trim(
+                Tools::getValue('payfast_passphrase', Configuration::get('PAYFAST_PASSPHRASE'))
+            ) . '" />
                </div>
                 <p class="additional__info additional__info--taller">' . $this->l(
                 'The passphrase is an optional/ extra security feature that must be set on your '
             ) . '<a id="' . self::PFLINK . '" href="' . self::PAYFASTURL . '">' .
-                 $this->l('payfast.io') . '</a>' . $this->l(
+            $this->l('payfast.io') . '</a>' . $this->l(
                 ' account in order to be used. You can find your passphrase under SETTINGS >
                  Integration SECURITY PASSPHRASE.'
             ) . '</p>' .
-                 '
+            '
             </div>
             <div class="divider"></div>
 
@@ -319,32 +304,32 @@ class Payfast extends PaymentModule
                    ' . $this->l('Enable') . '
                    </span>
                    <input type="radio" name="payfast_split_payments_enabled"  value="1" ' .
-                 (
-                 empty(
-                 Tools::getValue(
-                     'payfast_split_payments_enabled',
-                     Configuration::get('PAYFAST_SPLIT_PAYMENT_ENABLED')
-                 )
-                 ) ? '' : self::CHECKED
-                 ) . ' />
+            (
+            empty(
+            Tools::getValue(
+                'payfast_split_payments_enabled',
+                Configuration::get('PAYFAST_SPLIT_PAYMENT_ENABLED')
+            )
+            ) ? '' : self::CHECKED
+            ) . ' />
                    <span class="merchant__headers">
                    ' . $this->l('Disable') . '
                    </span>
                    <input type="radio" name="payfast_split_payments_enabled"  value="0" ' .
-                 (
-                 empty(
-                 Tools::getValue(
-                     'payfast_split_payments_enabled',
-                     Configuration::get('PAYFAST_SPLIT_PAYMENT_ENABLED')
-                 )
-                 ) ? self::CHECKED : '') . ' />
+            (
+            empty(
+            Tools::getValue(
+                'payfast_split_payments_enabled',
+                Configuration::get('PAYFAST_SPLIT_PAYMENT_ENABLED')
+            )
+            ) ? self::CHECKED : '') . ' />
                 </div>
            </div>
                 <p class="additional__info additional__info--taller">' . $this->l(
                 'Enable Split Payments to allow a portion of every payment to be split to a specified
                  receiving merchant. Split Payments must be enabled on your '
             ) . '<a id="' . self::PFLINK . '" href="' . self::PAYFASTURL . '">' .
-                 $this->l('payfast.io') . '</a>' . $this->l(' account under SETTINGS > Integration.') . '</p>
+            $this->l('payfast.io') . '</a>' . $this->l(' account under SETTINGS > Integration.') . '</p>
            </div>
 
            <div class="merchant__details merchant__config">
@@ -354,10 +339,10 @@ class Payfast extends PaymentModule
                  </span>
                  <input class="merchant__input"   type="number" step="0" min="0"
                   name="payfast_split_payment_merchant_id" placeholder="e.g. 1000010.." value="' .
-                 Tools::getValue(
-                     'payfast_split_payment_merchant_id',
-                     Configuration::get('PAYFAST_SPLIT_PAYMENT_MERCHANT_ID')
-                 ) . '" />
+            Tools::getValue(
+                'payfast_split_payment_merchant_id',
+                Configuration::get('PAYFAST_SPLIT_PAYMENT_MERCHANT_ID')
+            ) . '" />
                  </div>
           <p class="additional__info additional__info--smaller">' . $this->l(
                 'This will be on the receiving merchants Payfast Dashboard.'
@@ -371,21 +356,21 @@ class Payfast extends PaymentModule
                 </span>
                 <input class="merchant__input"   type="number" step="0" min="0"
                   name="payfast_split_payment_amount" placeholder="e.g. 1000" value="' .
-                 Tools::getValue(
-                     'payfast_split_payment_amount',
-                     Configuration::get('PAYFAST_SPLIT_PAYMENT_AMOUNT')
-                 ) . '" />
+            Tools::getValue(
+                'payfast_split_payment_amount',
+                Configuration::get('PAYFAST_SPLIT_PAYMENT_AMOUNT')
+            ) . '" />
                 <span class="merchant__headers">
                 ' . $this->l('Percentage') . '
                 </span>
                 <input class="merchant__input"   type="number" step="0" min="0" max="100"
                 name="payfast_split_payment_percentage" placeholder="e.g. 10" value="' .
-                 trim(
-                     Tools::getValue(
-                         'payfast_split_payment_percentage',
-                         Configuration::get('PAYFAST_SPLIT_PAYMENT_PERCENTAGE')
-                     )
-                 ) . '" />
+            trim(
+                Tools::getValue(
+                    'payfast_split_payment_percentage',
+                    Configuration::get('PAYFAST_SPLIT_PAYMENT_PERCENTAGE')
+                )
+            ) . '" />
              </div>
          <p class="additional__info additional__info--smaller">' . $this->l(
                 'Required amount in cents (ZAR) or/and percentage allocated to the receiving merchant of
@@ -408,8 +393,8 @@ class Payfast extends PaymentModule
                </span>
                <input class="merchant__input"   type="number" step="0" min="0"
                name="payfast_split_payment_max" placeholder="e.g. 10000" value="' . trim(
-                     Tools::getValue('payfast_split_payment_max', Configuration::get('PAYFAST_SPLIT_PAYMENT_MAX'))
-                 ) . '" />
+                Tools::getValue('payfast_split_payment_max', Configuration::get('PAYFAST_SPLIT_PAYMENT_MAX'))
+            ) . '" />
             </div>
         <p class="additional__info additional__info--smaller">' . $this->l(
                 'Optional maximum or/and minimum amount that will be split, in cents (ZAR).'
@@ -469,17 +454,17 @@ class Payfast extends PaymentModule
                   </span>
 
                   <input  class="merchant__input"   type="text" name="payfast_paynow_text" value="' .
-                 Configuration::get(
-                     'PAYFAST_PAYNOW_TEXT'
-                 ) . '">
+            Configuration::get(
+                'PAYFAST_PAYNOW_TEXT'
+            ) . '">
                   ';
 
         //Pay Now text preview.
         $html .= '<span class="merchant__headers preview__header">Preview</span>
                   <div>
                     ' . Configuration::get('PAYFAST_PAYNOW_TEXT') .
-                 '&nbsp&nbsp<img alt="Pay with Payfast" title="Pay with Payfast" src="' . __PS_BASE_URI__ .
-                 'modules/payfast/logo.svg" style="width: 150px; height: auto;">
+            '&nbsp&nbsp<img alt="Pay with Payfast" title="Pay with Payfast" src="' . __PS_BASE_URI__ .
+            'modules/payfast/logo.svg" style="width: 150px; height: auto;">
                   </div>
                </div>
             </div>
@@ -543,17 +528,17 @@ class Payfast extends PaymentModule
         return $html;
     }
 
-    public function hookDisplayRightColumn($params)
+    public function hookDisplayRightColumn($params): string
     {
         return $this->displayLogoBlock(self::RIGHT_COLUMN);
     }
 
-    public function hookDisplayLeftColumn($params)
+    public function hookDisplayLeftColumn($params): string
     {
         return $this->displayLogoBlock(self::LEFT_COLUMN);
     }
 
-    public function hookDisplayFooter($params)
+    public function hookDisplayFooter($params): string
     {
         return '
         <section id="payfast_footer_link" class="footer-block col-xs-12 col-sm-2">
@@ -565,7 +550,7 @@ class Payfast extends PaymentModule
         </section>';
     }
 
-    public function hookPaymentOptions($params)
+    public function hookPaymentOptions($params): array
     {
         if (!$this->active) {
             return [];
@@ -576,7 +561,7 @@ class Payfast extends PaymentModule
         ];
     }
 
-    public function getCardPaymentOption($params)
+    public function getCardPaymentOption($params): PaymentOption
     {
         global $cookie;
         $cart = $params['cart'];
@@ -596,7 +581,7 @@ class Payfast extends PaymentModule
         if ($cart->id_currency != $currency->id) {
             // If Payfast currency differs from local currency
             $cart->id_currency   = (int)$currency->id;
-            $cookie->id_currency = (int)$cart->id_currency;
+            $cookie->id_currency = $cart->id_currency;
             $cart->update();
         }
 
@@ -722,7 +707,7 @@ class Payfast extends PaymentModule
         );
 
         //add selected split payment values
-        if (($split_payment = Configuration::get('PAYFAST_SPLIT_PAYMENT_ENABLED')) && !is_null($split_payment)) {
+        if (Configuration::get('PAYFAST_SPLIT_PAYMENT_ENABLED')) {
             $data['info']['setup']['split_payment']['merchant_id'] = Configuration::get(
                 'PAYFAST_SPLIT_PAYMENT_MERCHANT_ID'
             );
@@ -733,12 +718,9 @@ class Payfast extends PaymentModule
             $data['info']['setup']['split_payment']['min']         = Configuration::get('PAYFAST_SPLIT_PAYMENT_MIN');
             $data['info']['setup']['split_payment']['max']         = Configuration::get('PAYFAST_SPLIT_PAYMENT_MAX');
 
-            $split_payment_array = array();
-            foreach ($data['info']['setup']['split_payment'] as $key => $val) {
-                if (!empty($val)) {
-                    $split_payment_array[$key] = $val;
-                }
-            }
+            $split_payment_array    = array_filter($data['info']['setup']['split_payment'], function ($val) {
+                return !empty($val);
+            });
             $payfastValues['setup'] = [
                 'name'  => 'setup',
                 'type'  => 'hidden',
@@ -766,7 +748,7 @@ class Payfast extends PaymentModule
         return $externalOption;
     }
 
-    public function hookDisplayPaymentReturn($params)
+    public function hookDisplayPaymentReturn($params): string
     {
         if (!$this->active) {
             return '';
@@ -775,7 +757,7 @@ class Payfast extends PaymentModule
         return $this->fetch('module:payfast/payfast_success.tpl');
     }
 
-    private function displayLogoBlock($position)
+    private function displayLogoBlock($position): string
     {
         return '
             <div style="text-align:center;">
