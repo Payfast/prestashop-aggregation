@@ -1,7 +1,7 @@
 {*
 * confirmation.tpl
 *
-* Copyright (c) 2025 Payfast (Pty) Ltd
+* Copyright (c) 2026 Payfast (Pty) Ltd
 *
 * @link       https://payfast.io/integration/plugins/prestashop/
 *}
@@ -11,12 +11,12 @@
         <div class="card-block">
             <h1>
                 {if empty($status) || $status == 2}
-                    {l s='Transaction declined' mod='fortis'}
+                    {l s='Transaction declined' mod='payfast'}
                 {elseif $status == 3}
-                    {l s='Transaction cancelled' mod='fortis'}
+                    {l s='Transaction cancelled' mod='payfast'}
                 {/if}
             </h1>
-            <p>Please <a href="{$link->getPageLink('cart')}?action=show">{l s='click here' mod='fortis'}</a> to try
+            <p>Please <a href="{$link->getPageLink('cart')}?action=show">{l s='click here' mod='payfast'}</a> to try
                 again.</p>
         </div>
     </div>
