@@ -1,7 +1,7 @@
 {*
 * payfast.tpl
 *
-* Copyright (c) 2025 Payfast (Pty) Ltd
+* Copyright (c) 2026 Payfast (Pty) Ltd
 *
 * @link       https://payfast.io/integration/plugins/prestashop/
 *}
@@ -15,7 +15,7 @@
             <a href='#' onclick='document.getElementById("payfastPayNow").submit();return false;'>
                 {if $data['payfast_paynow_logo']=='on'}
                     <img alt='Pay with Payfast' title='Pay with Payfast'
-                         src="/modules/payfast/logo.svg"
+                         src="/modules/payfast/payfast-logo.svg"
                          style="width: 150px; height: auto;">
                 {/if}
             </a>
