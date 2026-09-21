@@ -1,8 +1,8 @@
-# mod-prestashop
+# prestashop-aggregation
 
-## Payfast module v1.3.0 for PrestaShop v8.2.1
+## Payfast Aggregation module v1.4.0 for PrestaShop v9.1.5
 
-This is the Payfast module for Prestashop. Please feel free
+This is the Payfast Aggregation module for Prestashop. Please feel free
 to [contact the Payfast support team](https://payfast.io/contact/) should you require any assistance.
 
 ## Installation
@@ -11,7 +11,7 @@ to [contact the Payfast support team](https://payfast.io/contact/) should you re
 2. Navigate to **Modules** -> **Module Manager**.
 3. Click the **Upload a module** button.
 4. Click **Drop your module archive here or select file** and select
-   **[payfast.zip](https://github.com/Payfast/mod-prestashop/releases/download/v1.3.0/payfast.zip)**.
+   **[payfast.zip](https://github.com/Payfast/prestashop-aggregation/releases/download/v1.4.0/payfast.zip)**.
 5. Click the **Configure** button. The Payfast configuration options will now display.
 6. Enter your preferred details and click **Save Changes** at the bottom of the page.
 

@@ -1,0 +1,135 @@
+{#
+payfast_congigure.html.twig
+
+Copyright (c) 2026 Payfast (Pty) Ltd
+
+@link       https://payfast.io/integration/plugins/prestashop/
+#}
+<head>
+    <link href="{{ base_uri }}modules/payfast/views/css/payfast_styles.css" rel="stylesheet" type="text/css" />
+    <script src="{{ base_uri }}modules/payfast/views/js/payfast_validate.js"></script>
+</head>
+<form action="{{ request_uri }}" method="post">
+  <div class="pf__main--section" id="main__section">
+    <span class="main__section--header">{{ 'Settings:'|trans }}</span>
+    <div class="merchant__config">
+      <div class="payfast__mode">
+        <span class="pf__subheading">{{ 'Mode:'|trans }}</span>
+        <div class="pf__selector">
+          <input type="radio" name="payfast_mode" value="live" {% if payfast_mode == 'live' %}checked{% endif %} />{{ 'Live'|trans }}&nbsp;&nbsp;
+          <input type="radio" name="payfast_mode" value="test" {% if payfast_mode == 'test' %}checked{% endif %} />{{ 'Test'|trans }}&nbsp;&nbsp;
+        </div>
+      </div>
+      <p class="additional__info">{{ 'Select "Test" mode to test sandbox payments, and "Live" mode when you are ready to go live.'|trans }}</p>
+    </div>
+    <div class="divider"></div>
+    <div class="merchant__details merchant__config">
+      <div class="account__details">
+        <span class="merchant__headers">{{ 'Merchant ID'|trans }}</span>
+        <input class="merchant__input" type="number" step="0" min="0" name="payfast_merchant_id" placeholder="e.g. 1000010.." value="{{ payfast_merchant_id }}" />
+        <span class="merchant__headers">{{ 'Merchant Key'|trans }}</span>
+        <input class="merchant__input" type="text" name="payfast_merchant_key" placeholder="e.g. 46f0cd69458.." value="{{ payfast_merchant_key }}" />
+      </div>
+      <p class="additional__info additional__info--smaller">{{ 'You can find your Merchant ID and Merchant Key on your '|trans }}<a id="{{ pf_link }}" href="{{ payfast_url }}">{{ 'payfast.io'|trans }}</a>{{ ' account under DASHBOARD.'|trans }}</p>
+    </div>
+    <div class="divider"></div>
+    <div class="merchant__details merchant__config">
+      <div class="account__details">
+        <span class="merchant__headers">{{ 'Secure Passphrase'|trans }}</span>
+        <input class="merchant__input" type="text" name="payfast_passphrase" placeholder="Same as your Payfast Aggregation account" value="{{ payfast_passphrase }}" />
+      </div>
+      <p class="additional__info additional__info--taller">{{ 'The passphrase is an optional/ extra security feature that must be set on your '|trans }}<a id="{{ pf_link }}" href="{{ payfast_url }}">{{ 'payfast.io'|trans }}</a>{{ ' account in order to be used. You can find your passphrase under SETTINGS > Integration SECURITY PASSPHRASE.'|trans }}</p>
+    </div>
+    <div class="divider"></div>
+    <div class="merchant__details merchant__config">
+      <div class="account__details">
+        <span class="merchant__headers">{{ 'Enable Split Payments:'|trans }}</span>
+        <div class="pf__selector split__selector">
+          <span class="merchant__headers">{{ 'Enable'|trans }}</span>
+          <input type="radio" name="payfast_split_payments_enabled" value="1" {% if payfast_split_payments_enabled %}checked{% endif %} />
+          <span class="merchant__headers">{{ 'Disable'|trans }}</span>
+          <input type="radio" name="payfast_split_payments_enabled" value="0" {% if not payfast_split_payments_enabled %}checked{% endif %} />
+        </div>
+      </div>
+      <p class="additional__info additional__info--taller">{{ 'Enable Split Payments to allow a portion of every payment to be split to a specified receiving merchant. Split Payments must be enabled on your '|trans }}<a id="{{ pf_link }}" href="{{ payfast_url }}">{{ 'payfast.io'|trans }}</a>{{ ' account under SETTINGS > Integration.'|trans }}</p>
+    </div>
+    <div class="merchant__details merchant__config">
+      <div class="account__details">
+        <span class="merchant__headers">{{ 'Receiving Merchant ID'|trans }}</span>
+        <input class="merchant__input" type="number" step="0" min="0" name="payfast_split_payment_merchant_id" placeholder="e.g. 1000010.." value="{{ payfast_split_payment_merchant_id }}" />
+      </div>
+      <p class="additional__info additional__info--smaller">{{ 'This will be on the receiving merchants Payfast Aggregation Dashboard.'|trans }}</p>
+    </div>
+    <div class="merchant__details merchant__config">
+      <div class="account__details">
+        <span class="merchant__headers">{{ 'Amount in cents (ZAR)'|trans }}</span>
+        <input class="merchant__input" type="number" step="0" min="0" name="payfast_split_payment_amount" placeholder="e.g. 1000" value="{{ payfast_split_payment_amount }}" />
+        <span class="merchant__headers">{{ 'Percentage'|trans }}</span>
+        <input class="merchant__input" type="number" step="0" min="0" max="100" name="payfast_split_payment_percentage" placeholder="e.g. 10" value="{{ payfast_split_payment_percentage }}" />
+      </div>
+      <p class="additional__info additional__info--smaller">{{ 'Required amount in cents (ZAR) or/and percentage allocated to the receiving merchant of a split payment.'|trans }}</p>
+    </div>
+    <div class="merchant__details merchant__config">
+      <div class="account__details">
+        <span class="merchant__headers">{{ 'Min in cents (ZAR)'|trans }}</span>
+        <input class="merchant__input" type="number" step="0" min="0" name="payfast_split_payment_min" placeholder="e.g. 500" value="{{ payfast_split_payment_min }}" />
+        <span class="merchant__headers">{{ 'Max in cents (ZAR)'|trans }}</span>
+        <input class="merchant__input" type="number" step="0" min="0" name="payfast_split_payment_max" placeholder="e.g. 10000" value="{{ payfast_split_payment_max }}" />
+      </div>
+      <p class="additional__info additional__info--smaller">{{ 'Optional maximum or/and minimum amount that will be split, in cents (ZAR).'|trans }}</p>
+    </div>
+    <div class="divider"></div>
+    <div class="merchant__details merchant__config">
+      <div class="account__details">
+        <span class="merchant__headers">{{ 'Debug to log server-to-server communication:'|trans }}</span>
+        <div class="pf__selector debug__selector">
+          <span class="merchant__headers">{{ 'Enable'|trans }}</span>
+          <input type="radio" name="payfast_logs" value="1" {% if payfast_logs %}checked{% endif %} />
+          <span class="merchant__headers">{{ 'Disable'|trans }}</span>
+          <input type="radio" name="payfast_logs" value="" {% if not payfast_logs %}checked{% endif %} />
+        </div>
+      </div>
+      <p class="additional__info additional__info--taller">{{ 'Enable Debug to log the server-to-server communication. The log file for debugging can be found at '|trans }}{{ base_uri }}modules/payfast/payfast.log. {{ 'If activated, be sure to protect it by putting a .htaccess file in the same directory. If not, the file will be readable by everyone.'|trans }}</p>
+    </div>
+    <div class="divider"></div>
+    <div class="merchant__details merchant__config preview__section">
+      <p class="additional__info additional__info--taller">{{ 'The following payment option text is displayed during checkout.'|trans }}</p>
+      <div class="account__details">
+        <span class="merchant__headers">{{ 'Payment option text'|trans }}</span>
+        <input class="merchant__input" type="text" name="payfast_paynow_text" value="{{ payfast_paynow_text }}">
+        <span class="merchant__headers preview__header">Preview</span>
+        <div>
+          {{ payfast_paynow_text|e }}&nbsp;&nbsp;<img alt="Pay with Payfast" title="Pay with Payfast" src="{{ base_uri }}modules/payfast/payfast-logo.svg" style="width: 150px; height: auto;">
+        </div>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="merchant__details merchant__config preview__section">
+      <p class="additional__info additional__info--taller">{{ 'Select the position where the "Pay with Payfast" image will appear on your website. This will be dependant on your theme.'|trans }}</p>
+      <div class="account__details">
+        <span>{{ 'Image position'|trans }}</span>
+        <select class="pf__dropdown" id="box" name="logo_position">
+          {% for position, translation in blockPositionList %}
+            <option value="{{ position }}" {% if currentLogoBlockPosition == position %}selected="selected"{% endif %}>{{ translation }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div>
+      <button type="submit" name="submitPayfast" class="button" id="pf__button" value="Save">{{ 'Save Changes'|trans }}</button>
+      <div id="payfastDetailsError" style="display:none;color:red"></div>
+    </div>
+    <div class="clear"></div>
+  </div>
+  <div class="divider divider__longer"></div>
+  <div class="pf__form--footer">
+    <span class="footer__header">{{ 'Additional Information:'|trans }}</span>
+    <div class="footer__info">
+      <span class="footer__info--para">- {{ 'In order to use your Payfast Aggregation module, you must insert your Merchant ID and Merchant Key above.'|trans }}</span>
+      <span class="footer__info--para">- {{ 'Any orders in currencies other than ZAR will be converted by PrestaShop prior to be sent to the Payfast Aggregation payment gateway.'|trans }}</span>
+      <span class="footer__info--para">- {{ 'It is possible to setup an automatic currency rate update using crontab. You will simply have to create a cron job with currency update link available at the bottom of "Currencies" section.'|trans }}</span>
+    </div>
+  </div>
+</form>
+

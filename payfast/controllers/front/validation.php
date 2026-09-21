@@ -3,7 +3,7 @@
 /*
  * payfast.php
  *
- * Copyright (c) 2025 Payfast (Pty) Ltd
+ * Copyright (c) 2026 Payfast (Pty) Ltd
  *
  * @link       https://payfast.io/integration/plugins/prestashop/
  */
@@ -74,15 +74,33 @@ class PayfastValidationModuleFrontController extends ModuleFrontController
             'pfSoftwareName'       => 'PrestaShop',
             'pfSoftwareVer'        => Configuration::get('PS_INSTALL_VERSION'),
             'pfSoftwareModuleName' => 'PF-Prestashop',
-            'pfModuleVer'          => '1.3.0',
+            'pfModuleVer'          => '1.4.0',
         ];
+
+        // Validate that all required ITN keys are present before accessing them
+        $requiredKeys = [
+            'm_payment_id',
+            'amount_gross',
+            'custom_str2',
+            'custom_int1',
+            'pf_payment_id',
+            'payment_status'
+        ];
+        foreach ($requiredKeys as $key) {
+            if (!isset($pfData[$key])) {
+                $pfError  = true;
+                $pfErrMsg = PaymentRequest::PF_ERR_BAD_ACCESS;
+                break;
+            }
+        }
+
         //// Get internal cart
         if (!$pfError) {
-            // Get order data
+            // Get order data – cast to int to prevent injection via the field value
             $cart = new Cart((int)$pfData['m_payment_id']);
         }
 
-        if (!$cart->id) {
+        if (empty($cart) || !$cart->id) {
             Tools::redirect(self::REDIRECTBACK);
         }
 
@@ -99,14 +117,15 @@ class PayfastValidationModuleFrontController extends ModuleFrontController
         }
 
         //// Check data against internal order
+        $total = 0.0;
         if (!$pfError) {
             $paymentRequest->pflog('Check data against internal order');
             $fromCurrency = new Currency(Currency::getIdByIsoCode('ZAR'));
             $toCurrency   = new Currency($cart->id_currency);
 
-            $total = Tools::convertPriceFull($pfData['amount_gross'], $fromCurrency, $toCurrency);
+            $total = Tools::convertPriceFull((float)$pfData['amount_gross'], $fromCurrency, $toCurrency);
 
-            // Check order amount
+            // Check secure key
             if (strcasecmp($pfData['custom_str2'], $cart->secure_key) != 0) {
                 $pfError  = true;
                 $pfErrMsg = PaymentRequest::PF_ERR_SESSIONID_MISMATCH;
@@ -125,27 +144,30 @@ class PayfastValidationModuleFrontController extends ModuleFrontController
         if (!$pfError) {
             $paymentRequest->pflog('Check status and update order');
 
-            $transaction_id = $pfData['pf_payment_id'];
+            $transaction_id = $pfData['pf_payment_id'] ?? '';
+            $custom_int1    = isset($pfData['custom_int1']) ? (int)$pfData['custom_int1'] : 0;
+            $custom_str2    = $pfData['custom_str2'] ?? '';
+            $payment_status = $pfData['payment_status'] ?? '';
 
             if (empty(Context::getContext()->link)) {
                 Context::getContext()->link = new Link();
             }
 
-            switch ($pfData['payment_status']) {
+            switch ($payment_status) {
                 case 'COMPLETE':
                     $paymentRequest->pflog('- Complete');
 
                     // Update the purchase status
                     $this->module->validateOrder(
-                        (int)$pfData['custom_int1'],
+                        $custom_int1,
                         _PS_OS_PAYMENT_,
                         (float)$total,
                         $this->module->displayName,
                         null,
-                        array('transaction_id' => $transaction_id),
+                        ['transaction_id' => $transaction_id],
                         null,
                         false,
-                        $pfData['custom_str2']
+                        $custom_str2
                     );
 
                     break;
@@ -155,15 +177,15 @@ class PayfastValidationModuleFrontController extends ModuleFrontController
 
                     // If payment fails, delete the purchase log
                     $this->module->validateOrder(
-                        (int)$pfData['custom_int1'],
+                        $custom_int1,
                         _PS_OS_ERROR_,
                         (float)$total,
                         $this->module->displayName,
                         null,
-                        array('transaction_id' => $transaction_id),
+                        ['transaction_id' => $transaction_id],
                         null,
                         false,
-                        $pfData['custom_str2']
+                        $custom_str2
                     );
 
                     break;

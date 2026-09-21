@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit7c73dce4b03e60eb0d4339eadc9bd61d
+class ComposerStaticInit3201299e0c1c348fb72cdc47672f9d8f
 {
     public static $files = array (
         '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
@@ -13,13 +13,13 @@ class ComposerStaticInit7c73dce4b03e60eb0d4339eadc9bd61d
     );
 
     public static $prefixLengthsPsr4 = array (
-        'P' => 
+        'P' =>
         array (
             'Psr\\Http\\Message\\' => 17,
             'Psr\\Http\\Client\\' => 16,
             'Payfast\\PayfastCommon\\' => 22,
         ),
-        'G' => 
+        'G' =>
         array (
             'GuzzleHttp\\Psr7\\' => 16,
             'GuzzleHttp\\Promise\\' => 19,
@@ -28,28 +28,28 @@ class ComposerStaticInit7c73dce4b03e60eb0d4339eadc9bd61d
     );
 
     public static $prefixDirsPsr4 = array (
-        'Psr\\Http\\Message\\' => 
+        'Psr\\Http\\Message\\' =>
         array (
             0 => __DIR__ . '/..' . '/psr/http-factory/src',
             1 => __DIR__ . '/..' . '/psr/http-message/src',
         ),
-        'Psr\\Http\\Client\\' => 
+        'Psr\\Http\\Client\\' =>
         array (
             0 => __DIR__ . '/..' . '/psr/http-client/src',
         ),
-        'Payfast\\PayfastCommon\\' => 
+        'Payfast\\PayfastCommon\\' =>
         array (
             0 => __DIR__ . '/..' . '/payfast/payfast-common/src',
         ),
-        'GuzzleHttp\\Psr7\\' => 
+        'GuzzleHttp\\Psr7\\' =>
         array (
             0 => __DIR__ . '/..' . '/guzzlehttp/psr7/src',
         ),
-        'GuzzleHttp\\Promise\\' => 
+        'GuzzleHttp\\Promise\\' =>
         array (
             0 => __DIR__ . '/..' . '/guzzlehttp/promises/src',
         ),
-        'GuzzleHttp\\' => 
+        'GuzzleHttp\\' =>
         array (
             0 => __DIR__ . '/..' . '/guzzlehttp/guzzle/src',
         ),
@@ -62,9 +62,9 @@ class ComposerStaticInit7c73dce4b03e60eb0d4339eadc9bd61d
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit7c73dce4b03e60eb0d4339eadc9bd61d::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit7c73dce4b03e60eb0d4339eadc9bd61d::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit7c73dce4b03e60eb0d4339eadc9bd61d::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit3201299e0c1c348fb72cdc47672f9d8f::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit3201299e0c1c348fb72cdc47672f9d8f::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit3201299e0c1c348fb72cdc47672f9d8f::$classMap;
 
         }, null, ClassLoader::class);
     }
